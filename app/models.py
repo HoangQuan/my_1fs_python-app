@@ -20,9 +20,11 @@ class User(UserMixin, db.Model):
   first_name = db.Column(db.String(60), index=True)
   last_name = db.Column(db.String(60), index=True)
   password_hash = db.Column(db.String(128))
-  # department_id = db.Column(db.Integer, db.ForeignKey('departments.id'))
+  # post_id = db.Column(db.Integer, db.ForeignKey('posts.id'))
   role_id = db.Column(db.Integer, db.ForeignKey('roles.id'))
   is_admin = db.Column(db.Boolean, default=False)
+  posts = db.relationship('Post', backref='user',
+                              lazy='dynamic')
 
   @property
   def password(self):
@@ -62,8 +64,7 @@ class Post(db.Model):
   id = db.Column(db.Integer, primary_key=True)
   name = db.Column(db.String(60), unique=True)
   description = db.Column(db.String(200))
-  users = db.relationship('User', backref='post',
-                              lazy='dynamic')
+  user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
 
   def __repr__(self):
     return '<Post: {}>'.format(self.name)
